@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css\style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
+    <title>Dashboard</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+    
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+
+
+
+</head>
+
+<!-- Body Section content -->
+
+<body>
+    <div class="grid-container">
+        <!--start Header -->
+        <header class="header">
+            <!-- <div class="menu-icon" onclick="opensidebar()"> -->
+                <div>
+                <i class="fa fa-bars" onclick="opensidebar()"></i>
+
+            </div>
+
+            <div class="header-left">
+                <span class="material-symbols-outlined">
+                    notifications
+                    </span>
+                    <span class="material-symbols-outlined">
+                        account_circle
+                        </span>
+            </div>
+        </header>
+
+        
+        <!-- end header -->
+
+        <!-- sidebar -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-title">
+                <div class="sidebar-brand">
+                    <h2>
+                    <span style="color:brown;">Info</span>Track
+                    </h2>
+                </div>
+            </div>
+
+            <ul class="sidebar-list">
+                <li class="sidebar-list-item">
+                    &nbsp;
+                    <i class="fa fa-th "  style="font-size:20px;color: brown;padding-bottom: 2px;" aria-hidden="true"></i>
+                    &nbsp Dashboard
+                </li>
+                <li class="sidebar-list-item">
+                    &nbsp;
+                    <i class="fa fa-map-marker" style="font-size:20px;color: brown" aria-hidden="true"></i>
+                    &nbsp &nbsp Track a map 
+                </li>
+                <li class="sidebar-list-item">
+                    &nbsp;
+                    <i class="fa fa-line-chart" style="font-size:20px;color: brown" aria-hidden="true"></i>
+                    &nbsp  Report
+                </li>
+            </ul>
+        </div>
+        <!-- /sidebar -->
+
+        <!-- main -->
+        <main class="main-container">
+            <div class="main-title">
+                <h2>Dashboard</h2>              
+
+            </div>
+
+            <div class="row">
+                <div class="column">
+                  <div class="card">
+                    <i class="fa fa-exchange" style="font-size:20px;color: green;" aria-hidden="true"></i> 
+                    <div>70%</div>               
+                    
+                    <p class="moveleft" style="color: green;margin: 0;padding: 0;">Moving</p>
+                    <p class="moveleft"><b>264</b></p>
+                  </div>
+                </div>
+              
+                <div class="column">
+                  <div class="card">
+                    <i class="fa fa-times-circle-o" style="font-size:20px;color: red;"aria-hidden="true"></i>
+                    <div>70%</div>              
+                    <p class="moveleft" style="color: red;margin: 0;padding: 0;">Stopped</p>
+                    <p class="moveleft"><b>264</b></p>
+                    
+                  </div>
+                </div>
+                
+                <div class="column">
+                  <div class="card">
+                    <i class="fa fa-key" style="font-size:20px;color: orange;" aria-hidden="true"></i>
+                    <div>70%</div>  
+                    <p class="moveleft" style="color: orange;margin: 0;padding: 0;">Idle</p>
+                    <p class="moveleft"><b>264</b></p>
+                  </div>
+                </div>
+                
+                <div class="column">
+                  <div class="card">
+                    <i class="fa fa-ban" style="font-size:20px;color: gray;" aria-hidden="true"></i>
+                    <div>70%</div>  
+                    
+                    <p class="moveleft" style="color: gray;margin: 0;padding: 0;">Inactive</p>
+                    <p class="moveleft"><b>264</b></p>
+                  </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                      <i class="fa fa-sign-out" style="font-size:20px;color: crimson;" aria-hidden="true"></i>
+                      <div>70%</div>  
+                      <p class="moveleft" style="color: crimson;margin: 0;padding: 0;">Out of Service</p>
+                      <p class="moveleft"><b>264</b></p>
+                    </div>
+                  </div>
+              </div>
+
+              <!-- map -->
+
+              <div class="container">
+                <div>
+                    <h3>Track on Map</h3>                    
+                </div>
+                
+                <input id="searchInput" class="mapClass" type="text" placeholder="Enter a location">
+                <div id="map"></div>
+                <!-- <ul>
+                    <li>Address: <span id="address_display"></span></li>
+                    <li>Latitude: <span id="latitude_display"></span></li>
+                    <li>Longitude: <span id="longitude_display"></span></li>
+                </ul> -->
+                <script>
+                function initMap() {
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                        center: {lat: 22.611055454616626, lng: 70.72304745531825},
+                        zoom: 14
+                    });
+                    var input = document.getElementById('searchInput');
+                    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+            
+                    var autocomplete = new google.maps.places.Autocomplete(input);
+                    autocomplete.bindTo('bounds', map);
+                    
+                    var infowindow = new google.maps.InfoWindow();
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        anchorPoint: new google.maps.Point(0, -29)
+                    });
+                    
+                    autocomplete.addListener('place_changed', function() {
+                        infowindow.close();
+                        marker.setVisible(false);
+                        var place = autocomplete.getPlace();
+                    
+                        if (place.geometry.viewport) {
+                            map.fitBounds(place.geometry.viewport);
+                        } else {
+                            map.setCenter(place.geometry.location);
+                            map.setZoom(17);
+                        }
+                        marker.setIcon(({
+                            url: place.icon,
+                            size: new google.maps.Size(71, 71),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(17, 34),
+                            scaledSize: new google.maps.Size(35, 35)
+                        }));
+                        marker.setPosition(place.geometry.location);
+                        marker.setVisible(true);
+            
+                        var address = '';
+                        if (place.address_components) {
+                            address = [
+                                (place.address_components[0] && place.address_components[0].short_name || ''),
+                                (place.address_components[1] && place.address_components[1].short_name || ''),
+                                (place.address_components[2] && place.address_components[2].short_name || '')
+                            ].join(' ');
+                        }
+                    
+                        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                        infowindow.open(map, marker);
+                    
+                        /* Location details */
+                        document.getElementById('address_display').innerHTML = place.formatted_address;
+                        document.getElementById('latitude_display').innerHTML = place.geometry.location.lat();
+                        document.getElementById('longitude_display').innerHTML = place.geometry.location.lng();
+                    });
+                }
+               </script>
+               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeCZSPUB3GoQUFJsWLxNE74W5Yie9LD08&callback=initMap&libraries=places,geometry" async defer></script>
+                           
+                  
+                </div>
+
+                 <!-- Selected records and graph -->
+            <div class="container">
+                <div class="row">
+                    <div class="records-left">
+                        <h3>Selected Records</h3>
+                        <div class="table-box">
+                            <table>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Header 1</th>
+                                    <th>Header 2</th>
+                                    <th>Header 3</th>
+                                    <th>Header 4</th>
+                                </tr>
+
+                            </table>
+                            <tbody id="selected-records"></tbody>
+
+                        </div>
+
+                    </div>
+                    <div class="graph-right">                        
+                        <div id="main" style="width: 100%; height: 400px;"></div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+                <!-- CRUD Operation -->
+
+                <div class="container">
+                    <div class="row">
+                        <div class="row-left">
+                            <h3>Records</h3>
+                        </div>
+                        <div class="row-right">
+                            <i class="fa fa-search"></i>
+                            <input type="text" id="empId" placeholder="Search">
+                        </div>
+                    </div>
+                    <div class="table-box">
+                        <table>
+                            <tr>
+                                <th style="width: 10%; align-items: center;">Sr No</th>
+                                <th style="width: 10%;">Header 1</th>
+                                <th style="width: 10%;">Header 2</th>
+                                <th style="width: 50%;">Header 3</th>                                
+                                <th style="width: 10%;">Select</th>
+                                <th style="width: 10%;">Delete</th>
+                            </tr>
+                           
+                           
+                            <tbody id="table-body"></tbody>
+                          
+                        </table>
+                        <nav class="pagination">
+                            <ul class="pagination" id="pagination"></ul>
+                        </nav>
+
+                    </div>
+
+                </div>
+
+
+              
+        </main>
+        <!-- /main -->
+
+    </div>
+
+    
+   
+
+    <script>
+
+        //sidebar toggle
+
+var sidebarOpen = false
+var sidebar = document.getElementById("sidebar")
+
+function openSidebar(){
+    if(!sidebarOpen){
+        sidebar.classList.add("sidebar-responsive");
+        sidebarOpen = true;
+    }
+}
+function closeSidebar(){
+    if(!sidebarOpen){
+        sidebar.classList.remove("sidebar-responsive");
+        sidebarOpen = false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const tableBody = document.getElementById('table-body');
+    const selectedRecords = document.getElementById('selected-records');
+    const pagination = document.getElementById('pagination');
+    const itemsPerPage = 3;
+    let currentPage = 1;
+    let selectedRows = [];
+
+    function fetchData() {
+        axios.get('https://fakestoreapi.com/products')
+            .then(response => {
+                const data = response.data;
+                const totalItems = data.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                renderTable(data);
+                renderPagination(totalPages);
+            })
+            .catch(error => console.error(error));
+    }
+
+         // Function to handle button click event
+         function handleButtonClick(productId) {
+                    // Toggle selection
+                    const index = selectedRows.indexOf(productId);
+                    if (index === -1) {
+                        selectedRows.push(productId);
+                    } else {
+                        selectedRows.splice(index, 1);
+                    }
+
+                    displaySelectedRecords();
+                }
+
+                // Function to display selected records
+                function displaySelectedRecords() {
+                    selectedRecords.innerHTML = '';
+
+                    selectedRows.forEach(itemId => {
+                        const item = data.find(item => item.id === itemId);
+                        if (item) {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.id}</td>
+                                <td>${item.title}</td>
+                                <td>${item.price}</td>
+                            `;
+                            selectedRecords.appendChild(row);
+                        }
+                    });
+                }
+
+    function renderTable(data) {
+        tableBody.innerHTML = '';
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const itemsToShow = data.slice(startIndex, endIndex);
+        itemsToShow.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.title}</td>
+                <td>${item.price}</td>
+                <td>${item.description}</td>
+               
+                <td><button onclick="selectRecord(this)" style="background-color:blue;color:#fff;text-align:center">Select</button></td>
+                <td><button onclick = "deleteRow(this)" style="background-color:red;color:#fff">Delete</button></td>
+                
+                
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+    
+
+    function renderPagination(totalPages) {
+        
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.classList.add('page-item');
+            const link = document.createElement('a');
+            link.classList.add('page-link');
+            link.href = '#';
+            link.textContent = i;
+            li.appendChild(link);
+            pagination.appendChild(li);
+        }
+        pagination.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (event.target.tagName === 'A') {
+                currentPage = parseInt(event.target.textContent);
+                fetchData();
+            }
+        });
+    }
+
+    fetchData();
+});
+
+//chart
+
+var myChart = echarts.init(document.getElementById('main'));
+
+// Specify the configuration items and data for the chart
+var option = {
+  xAxis: {
+    data: ['April', 'May', 'June', 'July']
+  },
+  yAxis: {},
+  series: [
+    {
+      type: 'bar',
+      data: [15, 17, 13, 19]
+    },
+    {
+      type: 'bar',
+      data: [23, 24, 18, 25 ]
+    }
+  ]
+};
+
+// Display the chart using the configuration items and data just specified.
+myChart.setOption(option);
+
+
+//delete row function
+
+function deleteRow(btn) {
+  var row = btn.parentNode.parentNode; // Get the parent row of the button
+  var table = document.getElementById("table-body")
+  table.deleteRow(row.rowIndex);
+//   row.parentNode.removeChild(row); // Remove the row from the table
+}
+
+
+
+    </script>
+     
+</body>
+
+
+</html>
